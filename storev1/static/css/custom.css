@@ -6,3 +6,7 @@
 .middle{
     vertical-align: middle;
 }
+
+.nodecor{
+    text-decoration: none !important;
+}
