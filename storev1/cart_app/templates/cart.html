@@ -13,65 +13,82 @@
             </div>
         </div>
     {% else %}
-        <div clas="row">
-            <div class="col-lg-12">
-                <h3>Your Items.</h3>
-                <table>
+
+        <div class="row pb-5">
+            <div class="col-lg-12 text-center mb-5 mt-5">
+                <h2>Your Cart</h2>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="bg-danger text-white text-center pb-3 shadow">
+                    <h2>Your Item(s)</h2>
+                </div>
+                <table class="table">
+                   
+                    <tbody>
+                    
+                        {% for cart_item in cart_items  %}
+                                <tr>
+                                    <td style="width:25%">
+                                        <a href="cart_item.product.get_absolute_url">
+                                            <img class="img-fluid" src="{{cart_item.product.image.url}}">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <b>{{cart_item.product.name}}</b>
+                                        <br>
+                                        ${{cart_item.product.price}}
+                                        <br>
+                                        {{cart_item.quantity}} X {{cart_item.product.price}} 
+                                    </td>
+                                    <td>
+                                        ${{cart_item.sub_total}}
+                                    </td>
+                                    {% if cart_item.quantity <= cart_item.product_stock %}
+                                        <td>
+                                            <a href="{% url 'cart_app:add_cart' cart_item.product.id %}">Add</a>
+                                        </td>
+                                    {% else %}
+                                        <td>
+                                            <a href="{% url 'cart_app:add_cart' cart_item.product.id %}">Remove</a>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                        {% endfor %}
+
+
+
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            <div class="col-lg-6">
+            
+               <div class="bg-dark text-white text-center pb-3  shadow">
+                    <h2>Check-Out</h2>
+                </div>
+                <table class="table table-striped table-hover">
                     <thead>
-                        <th>Items</th>
+                        <th>Check out information</th>
                     </thead>
                     <tbody>
-                        {% for cart_item in cart_items  %}
-                            <tr>
-                                <td>
-                                    <a href="cart_item.product.get_absolute_url"><img class="img-fluid" src="{{cart_item.product.get_absolute_url}}"></a>
-                                </td>
-                                <td>
-                                    {{cart_item.product.name}}
-                                    <br>
-                                    {{cart_item.product.price}}
-                                    <br>
-                                    {{cart_item.quantity}} X {{cart_item.product.price}}
-                                </td>
-                                <td>
-                                    {{cart_item.subtotal}}
-                                </td>
-                                {% if cart_item.quantity < cart_item.product.strock %}
-                                    <td>
-                                        <a href="{% url 'cart_app:add_cart' cart_item.product.id %}"></a>
-                                    </td>
-                                {% else %}
-                                    <td>
-                                        <a href="{% url 'cart_app:add_cart' cart_item.product.id %}"></a>
-                                    </td>
-                                {% endif %}
-                            </tr>
-                        {% endfor %}
+                        <tr>
+                            <td>Please check your items before checking out.</td>
+                        </tr>
+                        <tr>
+                            <td>Your Total: ${{total}}</td>
+                        </tr>
+                        
                     </tbody>
                 </table>
 
-                <div class="row">
-                    <div class="col-lg-12">
-                        <h2>Check Out</h2>
-                        <table>
-                            <thead>
-                                <th>Check out information</th>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Your Total</td>
-                                </tr>
-                                <tr>
-                                    <td>{{total}}}</td>
-                                </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+                <a class="btn btn-dark btn-block btn-lg shadow" href="{% url 'shop:allProductCat' %}">Continue Shopping</a>
 
-                <a href="{% url 'shop:allProductCat' %}">Continue</a>
             </div>
         </div>
+
+       
     {% endif %}
 {% endblock %}
