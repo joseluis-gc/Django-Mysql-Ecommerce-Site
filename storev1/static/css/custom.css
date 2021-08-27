@@ -10,3 +10,14 @@
 .nodecor{
     text-decoration: none !important;
 }
+
+.bg-main{
+
+    background-color:#0C4B33 !important;
+    background: #0C4B33 !important;
+}
+
+.bg-second{
+    background: #44B78B;
+    background-color: #44B78B;
+}

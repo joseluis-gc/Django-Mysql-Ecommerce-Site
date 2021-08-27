@@ -6,10 +6,14 @@
 
 {% block content %}
     {% if not cart_items %}
-        <div clas="row">
-            <div class="col-lg-12">
-                <h3>No items in cart.</h3>
-                <a href="{% url 'shop:allProductCat' %}">Continue</a>
+        <div style="height:90vh;" clas="row pb-5">
+            <div class="col-lg-12 text-center mb-5 mt-5">
+                <div class="text-center pb-3 shadow">
+                    <h3>Your cart is empty.</h3>
+                </div>
+                
+                Click <a href="{% url 'shop:allProductCat' %}">Here</a> To Continue Shopping.
+
             </div>
         </div>
     {% else %}
@@ -19,8 +23,8 @@
                 <h2>Your Cart</h2>
             </div>
 
-            <div class="col-lg-6">
-                <div class="bg-danger text-white text-center pb-3 shadow">
+            <div class="col-lg-8">
+                <div class="bg-second text-white text-center pb-3 shadow">
                     <h2>Your Item(s)</h2>
                 </div>
                 <table class="table">
@@ -39,18 +43,36 @@
                                         <br>
                                         ${{cart_item.product.price}}
                                         <br>
-                                        {{cart_item.quantity}} X {{cart_item.product.price}} 
+                                        {{cart_item.quantity}} x {{cart_item.product.price}}  
                                     </td>
                                     <td>
                                         ${{cart_item.sub_total}}
                                     </td>
-                                    {% if cart_item.quantity <= cart_item.product_stock %}
+                                    {% if cart_item.quantity < cart_item.product.stock %}
                                         <td>
-                                            <a href="{% url 'cart_app:add_cart' cart_item.product.id %}">Add</a>
+                                            <a href="{% url 'cart_app:add_cart' cart_item.product.id %}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#50e395" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                            </a>
+
+                                            <a href="{% url 'cart_app:cart_remove' cart_item.product.id %}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f5b423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                            </a>
+                                            
+                                            <a href="{% url 'cart_app:full_remove' cart_item.product.id %}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef3e54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            </a>
                                         </td>
                                     {% else %}
                                         <td>
-                                            <a href="{% url 'cart_app:add_cart' cart_item.product.id %}">Remove</a>
+                                            <!--
+                                            <b>No More Stock</b>
+                                            -->
+                                            <a href="{% url 'cart_app:cart_remove' cart_item.product.id %}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f5b423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                                            </a>
+                                            <a href="{% url 'cart_app:full_remove' cart_item.product.id %}">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ef3e54" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                                            </a>
                                         </td>
                                     {% endif %}
                                 </tr>
@@ -64,7 +86,7 @@
             </div>
 
 
-            <div class="col-lg-6">
+            <div class="col-lg-4">
             
                <div class="bg-dark text-white text-center pb-3  shadow">
                     <h2>Check-Out</h2>
@@ -84,7 +106,11 @@
                     </tbody>
                 </table>
 
-                <a class="btn btn-dark btn-block btn-lg shadow" href="{% url 'shop:allProductCat' %}">Continue Shopping</a>
+                <form action="/create_checkout_session" method="POST">
+                    <button type="submit">Checkout</button>
+                </form>
+
+                <a class="btn btn-dark btn-block shadow" href="{% url 'shop:allProductCat' %}">Continue Shopping</a>
 
             </div>
         </div>

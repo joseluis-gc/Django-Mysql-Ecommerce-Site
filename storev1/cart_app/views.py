@@ -1,7 +1,11 @@
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
+from django.http.response import JsonResponse
+from django.shortcuts import get_object_or_404, render, redirect
 from shop.models import Product
 from . models import Cart, CartItem
+import stripe
+from django.conf import settings
+
 
 # Create your views here.
 def _cart_id(request):
@@ -22,7 +26,8 @@ def add_cart(request, product_id):
         cart.save()
     try:
         cart_item = CartItem.objects.get(product=product, cart=cart)
-        cart_item.quantity += 1
+        if cart_item.quantity < cart_item.product.stock:
+            cart_item.quantity += 1
         cart_item.save()
     except CartItem.DoesNotExist:
         cart_item = CartItem.objects.create(
@@ -43,5 +48,71 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
     except ObjectDoesNotExist :
         pass
 
-    return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter))
 
+    """stripe settings"""
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    stripe_total = int(total * 100)
+    description = 'My Shop - Ner Order'
+    data_key = settings.STRIPE_PUBLISHABLE_KEY
+
+
+    """stripe settings end"""
+
+    return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter, data_key = data_key, stripe_total = stripe_total, description = description))
+
+
+def cart_remove(request, product_id):
+    cart = Cart.objects.get(cart_id = _cart_id(request))
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = CartItem.objects.get(cart=cart, product=product)
+    if cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    else:
+        cart_item.delete()
+    return redirect('cart_app:cart_detail')    
+
+def full_remove(request, product_id):
+    cart = Cart.objects.get(cart_id = _cart_id(request))
+    product = get_object_or_404(Product, id=product_id)
+    cart_item = CartItem.objects.get(cart=cart, product=product)
+    cart_item.delete()
+    return redirect('cart_app:cart_detail')    
+
+
+
+
+    
+
+def create_checkout_session(request):
+    if request.method == 'GET':
+        domain_url = 'http://localhost:8000/'
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        try:
+            # Create new Checkout Session for the order
+            # Other optional params include:
+            # [billing_address_collection] - to display billing address details on the page
+            # [customer] - if you have an existing Stripe Customer ID
+            # [payment_intent_data] - capture the payment later
+            # [customer_email] - prefill the email input in the form
+            # For full details see https://stripe.com/docs/api/checkout/sessions/create
+
+            # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
+            checkout_session = stripe.checkout.Session.create(
+                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain_url + 'cancelled/',
+                payment_method_types=['card'],
+                mode='payment',
+                line_items=[
+                    {
+                        'name': 'T-shirt',
+                        'quantity': 1,
+                        'currency': 'usd',
+                        'amount': '2000',
+                    }
+                ]
+            )
+            return JsonResponse({'sessionId': checkout_session['id']})
+        except Exception as e:
+            return JsonResponse({'error': str(e)})
