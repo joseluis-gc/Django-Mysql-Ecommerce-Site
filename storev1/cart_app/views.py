@@ -50,16 +50,16 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 
 
     """stripe settings"""
-
+    """""
     stripe.api_key = settings.STRIPE_SECRET_KEY
     stripe_total = int(total * 100)
     description = 'My Shop - Ner Order'
     data_key = settings.STRIPE_PUBLISHABLE_KEY
-
+    """
 
     """stripe settings end"""
 
-    return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter, data_key = data_key, stripe_total = stripe_total, description = description))
+    return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter))
 
 
 def cart_remove(request, product_id):
@@ -81,38 +81,3 @@ def full_remove(request, product_id):
     return redirect('cart_app:cart_detail')    
 
 
-
-
-    
-
-def create_checkout_session(request):
-    if request.method == 'GET':
-        domain_url = 'http://localhost:8000/'
-        stripe.api_key = settings.STRIPE_SECRET_KEY
-        try:
-            # Create new Checkout Session for the order
-            # Other optional params include:
-            # [billing_address_collection] - to display billing address details on the page
-            # [customer] - if you have an existing Stripe Customer ID
-            # [payment_intent_data] - capture the payment later
-            # [customer_email] - prefill the email input in the form
-            # For full details see https://stripe.com/docs/api/checkout/sessions/create
-
-            # ?session_id={CHECKOUT_SESSION_ID} means the redirect will have the session ID set as a query param
-            checkout_session = stripe.checkout.Session.create(
-                success_url=domain_url + 'success?session_id={CHECKOUT_SESSION_ID}',
-                cancel_url=domain_url + 'cancelled/',
-                payment_method_types=['card'],
-                mode='payment',
-                line_items=[
-                    {
-                        'name': 'T-shirt',
-                        'quantity': 1,
-                        'currency': 'usd',
-                        'amount': '2000',
-                    }
-                ]
-            )
-            return JsonResponse({'sessionId': checkout_session['id']})
-        except Exception as e:
-            return JsonResponse({'error': str(e)})
