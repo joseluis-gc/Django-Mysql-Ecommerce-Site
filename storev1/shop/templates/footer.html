@@ -2,7 +2,12 @@
     <div class="container text-white">
         <div class="row">
             <div class="col-lg-12 text-center middle pt-5">
-                <p class="middle">&copy; Bora</p> 
+                <p class="middle">
+                    &copy;
+                    {% now "Y" as today_str %}
+                    {{ today_str }}
+                    Bora
+                </p> 
             </div>
         </div>
     </div>
