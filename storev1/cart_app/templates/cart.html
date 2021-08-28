@@ -109,6 +109,26 @@
                
                 <a class="btn btn-dark btn-block shadow" href="{% url 'shop:allProductCat' %}">Continue Shopping</a>
 
+                <br><br>
+
+                <form action="" method="POST">
+						{% csrf_token %}
+					  <script
+					    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+					    data-key="{{ data_key }}"
+					    data-amount="{{ stripe_total }}"
+					    data-name="PyStore"
+					    data-description="{{ description }}"
+					    data-image="{% static 'img/logo.png' %}"
+					    data-locale="auto"
+					    data-currency="usd"
+					    data-shipping-address="true"
+					    data-billing-address="true"
+					    data-zip-code="true">
+					  </script>
+				</form>
+                
+
             </div>
         </div>
 
