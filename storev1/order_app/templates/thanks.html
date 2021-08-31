@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+    Your Order has been placed.
+{% endblock %}
+{% block content %}
+ <div style="height:90vh;" clas="row pb-5">
+    <div class="col-lg-12 text-center mb-5 mt-5">
+        <div class="text-center pb-3 shadow">
+            <h3>Your Order has been placed!</h3>
+        </div>
+        
+        <p>
+            Your order number is: <b>{{customer_order.id}}</b>
+        </p>
+
+        <p>We have received you order and will process it right away, an email will be sent with your purchase details.</p>
+
+    </div>
+</div>
+{% endblock %}

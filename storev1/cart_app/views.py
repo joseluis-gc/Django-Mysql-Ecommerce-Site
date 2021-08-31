@@ -5,7 +5,7 @@ from shop.models import Product
 from . models import Cart, CartItem
 import stripe
 from django.conf import settings
-
+from order_app.models import Order, orderItem
 
 # Create your views here.
 def _cart_id(request):
@@ -38,6 +38,10 @@ def add_cart(request, product_id):
         cart_item.save()
     return redirect ('cart_app:cart_detail')
 
+
+
+
+
 def cart_detail(request, total=0, counter=0, cart_items=None):
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -45,6 +49,7 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
         for cart_item in cart_items:
             total+= (cart_item.product.price * cart_item.quantity)
             counter += cart_item.quantity
+            print('name: ' + cart_item.product.name)
     except ObjectDoesNotExist :
         pass
 
@@ -61,6 +66,21 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
         try:
                 token = request.POST['stripeToken']
                 email = request.POST['stripeEmail']
+
+                billingName = request.POST['stripeBillingName']
+                billingAddress1 = request.POST['stripeBillingAddressLine1']
+                billingcity = request.POST['stripeBillingAddressCity']
+                billingPostcode = request.POST['stripeBillingAddressZip']
+                billingCountry = request.POST['stripeBillingAddressCountryCode']
+                shippingName = request.POST['stripeShippingName']
+                shippingAddress1 = request.POST['stripeShippingAddressLine1']
+                shippingcity = request.POST['stripeShippingAddressCity']
+                shippingPostcode = request.POST['stripeShippingAddressZip']
+                shippingCountry = request.POST['stripeShippingAddressCountryCode']
+
+
+
+
                 customer = stripe.Customer.create(
 						email=email,
 						source = token
@@ -71,13 +91,59 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
 						description=description,
 						customer=customer.id
 				)
+
+
+                ''' Creating order '''
+                try:
+                    order_details = Order.objects.create(
+                            token = token,
+                            total = total,
+                            email_address = email,
+                            billingName = billingName,
+                            billingAddress1 = billingAddress1,
+                            billingCity = billingcity,
+                            billingPostCode = billingPostcode,
+                            billingCountry = billingCountry,
+                            ShippingName = shippingName,
+                            ShippingAddress1 = shippingAddress1,
+                            ShippingCity = shippingcity,
+                            ShippingPostCode = shippingPostcode,
+                            ShippingCountry = shippingCountry
+                        )
+                    order_details.save()
+
+                    for order_item in cart_items:
+                        #print('name-item-order: ' + cart_item.product.name)
+                        oi = orderItem.objects.create(
+                                product = order_item.product.name,
+                                quantity = order_item.quantity,
+                                price = order_item.product.price,
+                                order = order_details
+                        )   
+                        
+                        oi.save()
+
+                        '''Reduce stock when order is placed or saved'''
+                        products = Product.objects.get(id=order_item.product.id)
+                        products.stock = int(order_item.product.stock - order_item.quantity)
+                        products.save()
+                        order_item.delete()
+                        '''The terminal will print this message when the order is saved'''
+                        print('The order has been created')
+                    #return redirect('/shop')
+                    return redirect('order_app:thanks', order_details.id)
+
+                except ObjectDoesNotExist:
+                    pass
+
+
+                ''' Creating order end'''
         except stripe.error.CardError as e:
             return False,e
 
 
 
     """stripe settings end"""
-
     return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter, data_key=data_key, stripe_total=stripe_total, description=description))
 
 
