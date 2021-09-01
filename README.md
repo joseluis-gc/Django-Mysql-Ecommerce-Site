@@ -1,5 +1,6 @@
+<!--
 <p align="center"><a href="#" target="_blank"><img src="" width="400"></a></p>
-
+-->
 ## About PyStore
 
 This is a Python web application made with the Django framework:
