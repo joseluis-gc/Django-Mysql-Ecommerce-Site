@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'cart_app',
     'stripe',
     'order_app',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 STRIPE_PUBLISHABLE_KEY = 'pk_test_2r8xS2GdLRGp3YDYb0LQ15g1'
 STRIPE_SECRET_KEY = 'sk_test_51BxiRAJa9P9gV1FhA70oeSiYof2mxlT5qin1UJotu44MP7OTrs0Z3kRpTOkv9HZC8E8OV89Ba0LnGIQoyzFG9z4300xtWQuHM7'
 
+CRISPY_TEMPLATE_PACK = 'bootstrap4'

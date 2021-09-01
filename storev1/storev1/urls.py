@@ -27,6 +27,7 @@ urlpatterns = [
     path('search/', include('search_app.urls')),
     path('cart/', include('cart_app.urls')),
     path('order/', include('order_app.urls')),
+    path('account/create/', views.signupView, name='signup'),
 ]
 
 if settings.DEBUG:
