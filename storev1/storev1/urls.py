@@ -27,9 +27,10 @@ urlpatterns = [
     path('search/', include('search_app.urls')),
     path('cart/', include('cart_app.urls')),
     path('order/', include('order_app.urls')),
-    path('account/create/', views.signupView, name='signup'),
-    path('account/login/', views.logInView, name='login'),
-    path('account/logout/', views.logOutView, name='logout'),
+    path('accounts/create/', views.signupView, name='signup'),
+    path('accounts/login/', views.logInView, name='login'),
+    #path('accounts/login/', views.logInView, name='login'),
+    path('accounts/logout/', views.logOutView, name='logout'),
 ]
 
 if settings.DEBUG:
