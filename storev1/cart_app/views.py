@@ -6,6 +6,8 @@ from . models import Cart, CartItem
 import stripe
 from django.conf import settings
 from order_app.models import Order, orderItem
+from django.template.loader import get_template
+from django.core.mail import EmailMessage
 
 # Create your views here.
 def _cart_id(request):
@@ -130,7 +132,14 @@ def cart_detail(request, total=0, counter=0, cart_items=None):
                         order_item.delete()
                         '''The terminal will print this message when the order is saved'''
                         print('The order has been created')
-                    #return redirect('/shop')
+                    
+                    try:
+                        #sending an email with the order details.
+                        sendEmail(order_details.id)
+                        print('The email has been sent to the customer')
+                    except IOError as e:
+                        return e
+                                
                     return redirect('order_app:thanks', order_details.id)
 
                 except ObjectDoesNotExist:
@@ -167,13 +176,34 @@ def full_remove(request, product_id):
 
 
 
+def sendEmail(order_id):
+    transaction = Order.objects.get(id=order_id)
+    order_items = orderItem.objects.filter(order=transaction)
+    try:
+        #sending email order
+    	subject = "Perfect Cushion Store - New Order #{}".format(transaction.id)
+    	to = ['{}'.format(transaction.email_address)]
+    	from_email = "orders@perfectcushionstore.com"
+    	order_information = {
+    	'transaction' : transaction,
+    	'order_items' :	order_items
+    	}
+    	message = get_template('email/email.html').render(order_information)
+    	msg = EmailMessage(subject, message, to=to, from_email=from_email)
+    	msg.content_subtype = 'html'
+    	msg.send()
+    except IOError as e:
+    	return e
+
+
+
+
 
 
 
 
 
 def checkout(request):
-    
     
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
@@ -183,9 +213,6 @@ def checkout(request):
             counter += cart_item.quantity
     except ObjectDoesNotExist :
         pass
-
-
-   
 
     return render(request, 'cart.html', dict(cart_items = cart_items, total=total, counter=counter))
 

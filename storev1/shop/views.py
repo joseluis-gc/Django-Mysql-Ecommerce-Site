@@ -85,3 +85,5 @@ def logInView(request):
 def logOutView(request):
     logout(request)
     return redirect('login')
+
+    
