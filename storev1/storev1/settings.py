@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'j$3(jr&&k*fbta840pw4v6nkjr&=lf3ln^!)%n8on2_o7x6b__'
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -139,14 +141,14 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static', 'media')
 
 
-STRIPE_PUBLISHABLE_KEY = 'pk_test_2r8xS2GdLRGp3YDYb0LQ15g1'
-STRIPE_SECRET_KEY = 'sk_test_51BxiRAJa9P9gV1FhA70oeSiYof2mxlT5qin1UJotu44MP7OTrs0Z3kRpTOkv9HZC8E8OV89Ba0LnGIQoyzFG9z4300xtWQuHM7'
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY") 
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY") 
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 #email settings for MAILGUN
-EMAIL_HOST = 'smtp.mailgun.com'
-EMAIL_PORT = '587'
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'postmaster@sandboxd0279a2482a24621b2dae290cca30767.mailgun.org'
-EMAIL_HOST_PASSWORD = 'a67aec73a9acbe4058858a8f70181438-156db0f1-b0fb49e4'
+EMAIL_HOST = config("EMAIL_HOST")
+EMAIL_PORT = config("EMAIL_PORT")
+EMAIL_USE_TLS = config("EMAIL_USE_TLS")
+EMAIL_HOST_USER = config("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD")
