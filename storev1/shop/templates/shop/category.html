@@ -36,13 +36,57 @@
             </div>
         </div>
     {% else %}
+        
+        <!--slider
         <div class="row">
-            <div class="col-lg-12">
-                <img src="{% static 'img/noimage.jpg' %}" alt="{{ category.name }}" />
+            <div class="col-lg-6 offset-lg-3">
+            
+
+            <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+            <ol class="carousel-indicators">
+                <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner">
+                {% for product in products.object_list %}                
+                <div class="carousel-item {% if forloop.counter == 1 %}active{% endif %}">
+                    <img class="d-block w-100" src="{{ product.image.url }}" alt="{{product.name}}">
+                </div>
+                {% endfor %}
+                
             </div>
+            <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+
+
+
+            </div>
+        </div>
+        slider end-->
+
+
+
+        <div class="row">
+            <div class="col-lg-12 pt-3 pb-5">
+                <img src="{% static 'img/1.jpg' %}" alt="{{ category.name }}" class="img-fluid" />
+            </div>
+
             <div class="col-lg-12">
-                <span><img class="img-fluid" width="50" src="{% static 'img/heart.svg' %}"><h1>Our Collection</h1></span>
-                <p>Custom content</p>
+                <span style="font-weight:bold; font-size:28px;"><img class="img-fluid" width="50" src="{% static 'img/heart.svg' %}"> &nbsp; Our Collection</span>
+                
+                <!--
+                <p>Custom Content.</p>
+                -->
+
             </div>
         </div>
     {% endif %}

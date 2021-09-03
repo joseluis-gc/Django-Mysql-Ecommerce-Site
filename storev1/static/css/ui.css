@@ -853,6 +853,8 @@ a[class*=card]:hover .title {
   display: inline-block;
   -o-object-fit: cover;
      object-fit: cover;
+     object-position: center top;
+
 }
 
 /* GRID STYLE PRODUCT ITEM */

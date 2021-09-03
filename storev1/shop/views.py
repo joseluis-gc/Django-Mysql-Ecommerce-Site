@@ -40,6 +40,9 @@ def allProductCat(request, c_slug=None):
     return render(request, 'shop/category.html', {'category':c_page, 'products':products})
 
 
+
+
+
 def ProdCatDetail(request, c_slug, product_slug):
     try:
         product = Product.objects.get(category__slug=c_slug, slug=product_slug)
