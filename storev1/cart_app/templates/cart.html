@@ -18,6 +18,139 @@
         </div>
     {% else %}
 
+
+<div class="row pb-5">
+
+    <div class="col-lg-12 text-center mt-3">
+        <h2>Your Cart</h2>
+    </div>
+
+<div class="card mt-5 col-lg-9 shadow">
+
+<table style="width:100%" class="table table-borderless table-responsive ">
+<thead style="border-color:transparent !important" class="text-muted">
+<tr class="small text-uppercase">
+  <th style="width:40%" >Product</th>
+  <th style="width:10%" >Quantity</th>
+  <th style="width:20%" >Price</th>
+  <th style="width:30%" >Options</th>
+</tr>
+</thead>
+<tbody>
+
+{% for cart_item in cart_items  %}
+<tr>
+	<td>
+		<figure class="itemside">
+			<div class="aside1"><img src="{{cart_item.product.image.url}}" class="img-sm"></div>
+			<figcaption class="info">
+				<a href="#" class="title text-dark">{{cart_item.product.name}}</a>
+				<p class="text-muted small">
+                {{cart_item.product.category}}
+                <br>
+                
+               
+
+                </p>
+			</figcaption>
+		</figure>
+	</td>
+	<td> 
+		{{cart_item.quantity}}
+	</td>
+	<td> 
+		<div class="price-wrap"> 
+			<var class="price">${{cart_item.sub_total}}</var> 
+            <br>
+		</div> <!-- price-wrap .// -->
+	</td>
+
+
+    {% if cart_item.quantity < cart_item.product.stock %}
+        <td class="text-right"> 
+            
+            <a href="" class="btn btn-primary"> Add</a>
+
+            <a class="btn btn-warning" href="{% url 'cart_app:cart_remove' cart_item.product.id %}">
+                Remove
+            </a>
+            <a class="btn btn-danger" href="{% url 'cart_app:full_remove' cart_item.product.id %}">
+                Delete
+            </a>
+        </td>
+    {% else %}
+        <td class="text-right"> 
+            
+
+            <a class="btn btn-warning" href="{% url 'cart_app:cart_remove' cart_item.product.id %}">
+                Remove
+            </a>
+            <a class="btn btn-danger" href="{% url 'cart_app:full_remove' cart_item.product.id %}">
+                Delete
+            </a>
+        </td>
+    {% endif %}
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+
+
+
+
+
+
+
+
+
+<div class="col-lg-3 mt-5 card">
+
+    <div class="card-body">
+        <h5 class="card-title">Check-Out</h5>
+        <h6 class="card-subtitle mb-2 text-muted">Check out information </h6>
+        
+        <p class="card-text">
+            Please check your items before checking out.
+        </p>
+        
+        <h5>Your Total: ${{total}}</h5>
+
+        <a class="btn btn-dark btn-block shadow" href="{% url 'shop:allProductCat' %}">Continue Shopping</a>
+
+        <br><br>
+
+        <form action="" method="POST">
+                {% csrf_token %}
+                <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="{{ data_key }}"
+                data-amount="{{ stripe_total }}"
+                data-name="PyStore"
+                data-description="{{ description }}"
+                data-image="{% static 'img/logo.png' %}"
+                data-locale="auto"
+                data-currency="usd"
+                data-shipping-address="true"
+                data-billing-address="true"
+                data-zip-code="true">
+                </script>
+        </form>
+   </div>
+
+            
+            </div>
+
+
+
+</div>
+
+
+
+
+<!--
         <div class="row pb-5">
             <div class="col-lg-12 text-center mb-5 mt-5">
                 <h2>Your Cart</h2>
@@ -64,9 +197,7 @@
                                         </td>
                                     {% else %}
                                         <td>
-                                            <!--
-                                            <b>No More Stock</b>
-                                            -->
+                                            
                                             <a href="{% url 'cart_app:cart_remove' cart_item.product.id %}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#f5b423" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                                             </a>
@@ -132,6 +263,6 @@
             </div>
         </div>
 
-       
+       -->
     {% endif %}
 {% endblock %}
